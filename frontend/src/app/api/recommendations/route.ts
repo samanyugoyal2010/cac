@@ -1,7 +1,36 @@
 import { NextResponse } from "next/server";
+import fs from "node:fs";
+import path from "node:path";
+
+function loadRootEnv() {
+  const rootEnvPath = path.resolve(process.cwd(), "../.env");
+  if (!fs.existsSync(rootEnvPath)) return;
+
+  const content = fs.readFileSync(rootEnvPath, { encoding: "utf-8" });
+  for (const line of content.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith("#")) {
+      continue;
+    }
+
+    const separatorIndex = trimmed.indexOf("=");
+    if (separatorIndex === -1) {
+      continue;
+    }
+
+    const key = trimmed.slice(0, separatorIndex).trim();
+    const value = trimmed.slice(separatorIndex + 1).trim();
+    if (key && !(key in process.env)) {
+      process.env[key] = value;
+    }
+  }
+}
+
+loadRootEnv();
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const GROQ_MODEL = process.env.GROQ_MODEL || "llama-3.1-8b-instant"; // GPT-OSS default on Groq
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -38,6 +67,7 @@ Prediction label: ${label}
 Confidence: ${(confidence * 100).toFixed(1)}%
 
 Please provide:
+- First, ONE short patient-facing line. If benign and confidence is very high, use reassuring language (e.g., "You're healthy; this looks benign."). Avoid absolute guarantees.
 - Three evidence-backed product or treatment recommendations tailored to the above result
 - One lifestyle or monitoring suggestion
 - Keep the tone professional, empathetic, and under 130 words total.`;
@@ -50,7 +80,7 @@ Please provide:
         Authorization: `Bearer ${GROQ_API_KEY}`,
       },
       body: JSON.stringify({
-        model: "gpt-oss-llama3-8b",
+        model: GROQ_MODEL,
         temperature: 0.5,
         max_tokens: 320,
         messages: [
