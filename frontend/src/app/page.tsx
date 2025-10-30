@@ -448,14 +448,13 @@ export default function Home() {
           whileInView={fadeInWhileInView}
           viewport={fadeInViewport}
           transition={withDelay(0.1)}
-          className="grid gap-8 rounded-3xl border border-white/12 bg-slate-950/60 p-8 shadow-lg shadow-black/25 backdrop-blur lg:grid-cols-[minmax(0,_1.2fr)_minmax(0,_1fr)]"
+          className="grid gap-10 rounded-3xl border border-white/10 bg-slate-950/55 p-8 shadow-lg shadow-black/20 backdrop-blur lg:grid-cols-[minmax(0,_1.15fr)_minmax(0,_1fr)]"
         >
           <div className="space-y-6">
             <header className="space-y-3">
               <h2 className="text-3xl font-semibold text-white">Dermatoscopic upload</h2>
               <p className="max-w-xl text-sm text-slate-300">
-                Upload a dermatoscopic photo or capture one live. Keeping the lesion centred and evenly lit yields the
-                clearest recommendations.
+                Upload a dermatoscopic photo or capture one live. Keep the lesion centred, evenly lit, and within clinic-approved guidelines.
               </p>
             </header>
 
@@ -463,8 +462,8 @@ export default function Home() {
               <label
                 htmlFor="lesion-upload"
                 className={clsx(
-                  "group relative flex min-h-[220px] cursor-pointer flex-col items-center justify-center gap-4 rounded-2xl border border-white/8 bg-slate-950/55 px-8 py-10 text-center transition",
-                  selectedFile ? "border-cyan-500/60 bg-cyan-500/10" : "hover:border-cyan-400/40 hover:bg-cyan-500/10"
+                  "group relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/12 bg-slate-950/45 px-8 py-10 text-center transition",
+                  selectedFile ? "border-cyan-500/50 bg-cyan-500/10" : "hover:border-cyan-400/40 hover:bg-cyan-500/10"
                 )}
               >
                 <input
@@ -475,8 +474,8 @@ export default function Home() {
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-200">
-                  <Upload className="h-6 w-6" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-200">
+                  <Upload className="h-5 w-5" />
                 </div>
                 <div>
                   <p className="text-base font-medium text-white">
@@ -499,20 +498,19 @@ export default function Home() {
               )}
             </div>
 
-            <p className="text-xs text-slate-400">
-              <span className="inline-flex items-center gap-1 pr-3">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-300" />
-                Encrypted upload
+            <div className="grid gap-3 text-xs text-slate-400 sm:grid-cols-3">
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/70 px-3 py-1">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-300" /> Encrypted upload
               </span>
-              <span className="inline-flex items-center gap-1">
-                <Sparkles className="h-3.5 w-3.5 text-cyan-300" /> Clinician oversight prompts
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/70 px-3 py-1">
+                <Sparkles className="h-3.5 w-3.5 text-cyan-300" /> Clinician oversight
               </span>
               {hasPreviewAsset && (
-                <span className="inline-flex items-center gap-1 pl-3 text-emerald-300">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-900/70 px-3 py-1 text-emerald-300">
                   <Camera className="h-3.5 w-3.5" /> Preview ready
                 </span>
               )}
-            </p>
+            </div>
 
             <div className="flex flex-wrap gap-3">
               <button
@@ -594,13 +592,15 @@ export default function Home() {
           </div>
 
           <div className="space-y-6">
-            <div className="rounded-2xl border border-white/10 bg-slate-950/70 p-6 shadow-md shadow-black/20">
-              <div className="flex items-center justify-between border-b border-white/5 pb-3">
-                <h3 className="text-lg font-semibold text-white">Inference results</h3>
-                <p className="text-xs uppercase tracking-wide text-slate-500">Clinician support</p>
+            <div className="rounded-2xl border border-white/10 bg-slate-950/65 p-6 shadow-md shadow-black/15">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-white">Inference results</h3>
+                  <p className="text-xs uppercase tracking-wide text-slate-500">Clinician support</p>
+                </div>
               </div>
 
-              <div className="mt-4 flex flex-col gap-4">
+              <div className="mt-5 space-y-4">
                 {previewUrl ? (
                   <div className="relative aspect-video overflow-hidden rounded-xl border border-white/10">
                     <Image
@@ -679,15 +679,17 @@ export default function Home() {
                     )}
                   </div>
 
-                  <div className="rounded-xl border border-white/8 bg-slate-950/60 p-4 text-sm text-slate-200">
-                    <div className="mb-2 flex items-center justify-between">
+                  <div className="rounded-xl border border-white/8 bg-slate-950/60 p-5 text-sm text-slate-200">
+                    <div className="mb-3 flex items-center justify-between">
                       <span className="font-semibold text-white">Product recommendations</span>
                       {isRecommendationsLoading && <Loader2 className="h-4 w-4 animate-spin text-cyan-300" />}
                     </div>
                     {recommendationError ? (
                       <p className="text-rose-300">{recommendationError}</p>
                     ) : recommendations ? (
-                      <div className="space-y-2 whitespace-pre-line text-slate-300">{recommendations}</div>
+                      <div className="prose prose-invert prose-sm max-w-none whitespace-pre-line text-slate-200">
+                        {recommendations}
+                      </div>
                     ) : (
                       <p className="text-slate-400">
                         {prediction

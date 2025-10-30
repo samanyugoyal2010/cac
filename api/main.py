@@ -1,4 +1,4 @@
-"""FastAPI application exposing the DermaSense inference endpoints."""
+""" FastAPI application exposing the DermaSense inference endpoints."""
 
 from __future__ import annotations
 
